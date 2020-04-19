@@ -1,0 +1,66 @@
+
+
+body {
+    background-color: #fffaff;
+}
+img {
+    width: 100px;
+    height: 100px;
+}
+#img-scissors {
+    width: 75px;
+}
+button {
+    padding: 5px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    width: 30%;
+    height: auto;
+    background-color: #fffaff;
+}
+
+.navbar {
+    text-align: center;
+    color: #f530d8;
+    border-width: 0px;
+    border-bottom-width: 2px;
+    border-style: solid;
+    border-color: #482fda;
+    font-family: 'AGoblinAppears-o2aV';
+}
+
+@font-face {
+    font-family:"AGoblinAppears-o2aV";
+    src: url('../font/AGoblinAppears-o2aV.ttf') format("truetype");
+  }
+
+  input {
+      display: block;
+      background-color: white;
+      width: 45%;
+      font-family: 'AGoblinAppears-o2aV';
+      font-size: 10px;
+  }
+
+  #chat {
+      margin-top: 15px;
+      height: 25px;
+      border-color: #482fda;
+      border-width: 1px;
+      border-style:solid;
+  }
+  #chat-box {
+      width: 45%;
+      height: 200px;
+      font-family: 'AGoblinAppears-o2aV';
+      font-size: 10px;
+      background-color: white;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #482fda;
+  }
+
+  .chat-text {
+      margin-left: 10px;
+      margin-top: 10px;
+  }
