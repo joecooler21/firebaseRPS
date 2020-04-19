@@ -4,19 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Linking all required app stylesheets -->
     <link rel="stylesheet" href="assets/css/reset.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
+
+    <!-- Linking Google Firebase Database -->
+  <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+
     <title>Rock, Paper, Scissors Game</title>
 </head>
 
 <body>
-    <nav class="navbar navbar-light text-center" style="background-color: #66eaff;">
-        <div id="header">Rock, Paper, Scissors Game</div>
-    </nav>
+    <h3 class="header">
+        Rock, Paper, Scissors Game</h3>
+    </h3>
+    <div class="container" id="main">
     <div class="container">
         <div class="row">
-            <div class="col col-lg-6 col-md-6 col-6">
+            <div class="col col-lg-12 col-md-12 col-12">
                 <button id="rock" type="button"><img src="assets/img/rock.png"></button>
                 <button id="paper" type="button"><img src="assets/img/paper.png"></button>
                 <button id="scissors" type="button"><img id="img-scissors" src="assets/img/scissors.png"></button>
@@ -27,6 +35,7 @@
         </div>
     </div>
     <div class="container">
+        <h3 id="status" class="header">Awaiting Player 1...</h3>
         <div class="row">
             <div class="col col-lg-12 col-md-12 col-12">
                 <div type="text" id="chat-box"></div>
@@ -35,6 +44,15 @@
             </div>
         </div>
     </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col col-lg-12 col-md-12 col-12">
+            <h3 id="footer" class="header" ><span>- Player 1: <span class="score">0</span><span></span><span></span> -- <span>Player 2: <span class="score">0</span></span> -</h3>
+        </div>
+    </div>
+</div>
+<!-- Linking main javascript file -->
     <script src="assets/js/app.js"></script>
 </body>
 
