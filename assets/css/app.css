@@ -32,6 +32,7 @@ button {
     border-style: solid;
     border-color: #482fda;
     font-family: 'AGoblinAppears-o2aV';
+    text-shadow: 1px 1px black;
 }
 
 #footer {
@@ -65,7 +66,7 @@ button {
       margin-top: 15px;
       height: 25px;
       border-color: #482fda;
-      border-width: 1px;
+      border-width: 2px;
       border-style:solid;
   }
   #chat-box {
@@ -76,10 +77,15 @@ button {
       font-size: 8px;
       background-color: white;
       border-style: solid;
-      border-width: 1px;
+      border-width: 2px;
       border-color: #482fda;
   }
 
   .score {
     color: #f530d8;
+  }
+
+  #copyright {
+      font-size: 9px;
+      text-shadow: 1px 1px black;
   }
