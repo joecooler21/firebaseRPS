@@ -54,31 +54,33 @@ button {
 
   input {
       display: block;
-      background-color: white;
       width: 45%;
       font-family: 'AGoblinAppears-o2aV';
       font-size: 10px;
   }
 
-  #chat {
+  #chat-input {
+      background-color: black;
+      color: white;
       font-size: 8px;
       width: 100%;
       margin-top: 15px;
       height: 25px;
-      border-color: #482fda;
+      border-color:white;
       border-width: 2px;
       border-style:solid;
   }
-  #chat-box {
+  #chat-window {
+      background-color: black;
+      color: white;
       margin-top: 3px;
       width: 100%;
       height: 200px;
       font-family: 'AGoblinAppears-o2aV';
       font-size: 8px;
-      background-color: white;
       border-style: solid;
       border-width: 2px;
-      border-color: #482fda;
+      border-color: white;
   }
 
   .score {
@@ -86,6 +88,8 @@ button {
   }
 
   #copyright {
+      margin-top: 10px;
+      margin-bottom: 5px;
       font-size: 9px;
       text-shadow: 1px 1px black;
   }
