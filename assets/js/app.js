@@ -29,7 +29,7 @@ database.ref().once('value').then(function(snap) {
   database.ref().child('player' + playerID).set({
     move: 0,
     wins: 0,
-    chat: 0
+    chat: null
 
   })
 }).then(function(){
@@ -38,15 +38,26 @@ database.ref().once('value').then(function(snap) {
     if (snap.val() === 0) {
       return;
     }
-    //console.log(snap.val());
   })
-  
 }).then(function(){
   // remove player child on disconnect
   database.ref('player' + playerID).onDisconnect().remove()
 }).then(function() {
   console.log("You are player" + playerID + " and your opponent is " + opp);
-})
+}).then(function () {
+  database.ref().on('value', function (snap) {
+    if (snap.numChildren() === 2) {
+      document.getElementById('p1-score').textContent = snap.val().player1.wins;
+      document.getElementById('p2-score').textContent = snap.val().player2.wins;
+      if (snap.val().player1.chat != null) {
+        appendChat('PLAYER1: ' + snap.val().player1.chat);
+      }
+      if (snap.val().player2.chat != null ) {
+        appendChat('PLAYER2: ' + snap.val().player2.chat);
+      }
+    }
+  });
+});
 
 var rockButton = document.getElementById("rock");
 var paperButton = document.getElementById("paper");
@@ -97,11 +108,21 @@ scissorsButton.addEventListener('click', function () {
   database.ref('/player' + playerID + '/move').set("scissors").then(result());
 });
 
+// set chat value to database
+var chatInput = document.getElementById('chat-input');
+chatInput.addEventListener('keypress', function (e) {
+  if (e.code === 'Enter') {
+    database.ref('player' + playerID + '/chat').set(chatInput.value);
+    database.ref('player' + playerID + '/chat').set(null);
+    chatInput.value = "";
+  }
+});
+
 function appendChat(text) {
-  var chat = document.getElementById("chat-box");
+  var chat = document.getElementById("chat-window");
   var ele = document.createElement("div");
   ele.setAttribute("class", "chat-text");
-  ele.textContent = "Player 1: " + text;
+  ele.textContent = text;
   chat.appendChild(ele);
 }
 
@@ -118,31 +139,37 @@ function result() {
     }
     if (p1_move === "rock" && p2_move === "paper") {
       console.log("player 2 wins");
+      addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "rock" && p2_move === "scissors") {
       console.log("player 1 wins");
+      addWin(1);
       resetMoves()
       return;
     }
     if (p1_move === "paper" && p2_move === "rock") {
       console.log("player 1 wins");
+      addWin(1);
       resetMoves()
       return;
     }
     if (p1_move === "paper" && p2_move === "scissors") {
       console.log("player 2 wins");
+      addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "scissors" && p2_move === "rock") {
       console.log("player 2 wins");
+      addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "scissors" && p2_move === "paper") {
       console.log("player 1 wins");
+      addWin(1);
       resetMoves()
       return;
     }
@@ -152,4 +179,13 @@ function result() {
 function resetMoves() {
   database.ref('player1/move').set('0');
   database.ref('player2/move').set('0');
+}
+
+function addWin(id) {
+  var wins;
+  database.ref('player' + id + '/wins').once('value', function(snap) {
+    wins = snap.val();
+    wins++;
+    database.ref('player' + id + '/wins').set(wins);
+  })
 }
