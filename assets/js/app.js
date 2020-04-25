@@ -50,10 +50,10 @@ database.ref().once('value').then(function(snap) {
       document.getElementById('p1-score').textContent = snap.val().player1.wins;
       document.getElementById('p2-score').textContent = snap.val().player2.wins;
       if (snap.val().player1.chat != null) {
-        appendChat('PLAYER1: ' + snap.val().player1.chat);
+        appendChat('PLAYER 1: ' + snap.val().player1.chat);
       }
       if (snap.val().player2.chat != null ) {
-        appendChat('PLAYER2: ' + snap.val().player2.chat);
+        appendChat('PLAYER 2: ' + snap.val().player2.chat);
       }
     }
   });
@@ -121,9 +121,10 @@ chatInput.addEventListener('keypress', function (e) {
 function appendChat(text) {
   var chat = document.getElementById("chat-window");
   var ele = document.createElement("div");
-  ele.setAttribute("class", "chat-text");
+  chat.setAttribute("class", "chat-text");
   ele.textContent = text;
   chat.appendChild(ele);
+
 }
 
 function result() {
