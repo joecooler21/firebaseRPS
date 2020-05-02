@@ -9,12 +9,18 @@ var config = {
 var playerID = 0;
 var opp = null;
 var ref = null;
+var winText = null;
 
 firebase.initializeApp(config);
 var database = firebase.database();
 
 // connect to database and see if any children, then assign playerID and set initial game variables
-database.ref().once('value').then(function(snap) {
+database.ref().once('value').then(function (snap) {
+  if (snap.numChildren() >= 2) {
+    alert('Clients have exceeded the maximum of 2. This window will close.');
+    window.close();
+    return;
+  }
 
   // 1 child per player, set ID's accordingly
   if (snap.numChildren() === 0) {
@@ -23,36 +29,48 @@ database.ref().once('value').then(function(snap) {
   } else if (snap.numChildren() === 1) {
     playerID = 2;
     opp = "player1";
-  } 
+  }
   // set variables for game logic
-}).then(function(){
+}).then(function () {
   database.ref().child('player' + playerID).set({
     move: 0,
     wins: 0,
-    chat: null
+    chat: null,
+    msg: null,
+    ties: 0
+
 
   })
-}).then(function(){
+}).then(function () {
   // set a listener for move of each player
-  database.ref('/player' + playerID + '/move').on('value', function(snap){
+  database.ref('/player' + playerID + '/move').on('value', function (snap) {
     if (snap.val() === 0) {
       return;
     }
   })
-}).then(function(){
+}).then(function () {
   // remove player child on disconnect
   database.ref('player' + playerID).onDisconnect().remove()
-}).then(function() {
+}).then(function () {
   console.log("You are player" + playerID + " and your opponent is " + opp);
 }).then(function () {
   database.ref().on('value', function (snap) {
     if (snap.numChildren() === 2) {
       document.getElementById('p1-score').textContent = snap.val().player1.wins;
       document.getElementById('p2-score').textContent = snap.val().player2.wins;
+      document.getElementById('ties').textContent = snap.val().player1.ties;
+      if (snap.val().player1.msg != null) {
+        document.getElementById('status').textContent = snap.val().player1.msg;
+        database.ref('player1/msg').set(null);
+      }
+      if (snap.val().player2.msg != null) {
+        document.getElementById('status').textContent = snap.val().player2.msg;
+        database.ref('player2/msg').set(null);
+      }
       if (snap.val().player1.chat != null) {
         appendChat('PLAYER 1: ' + snap.val().player1.chat);
       }
-      if (snap.val().player2.chat != null ) {
+      if (snap.val().player2.chat != null) {
         appendChat('PLAYER 2: ' + snap.val().player2.chat);
       }
     }
@@ -66,11 +84,11 @@ var scissorsButton = document.getElementById("scissors");
 var statusWindow = document.getElementById("status-text");
 var flag = false;
 
-var int = setInterval(function(){
+var int = setInterval(function () {
 
   if (!flag) {
-  statusWindow.style.visibility = 'visible';
-  flag = true;
+    statusWindow.style.visibility = 'visible';
+    flag = true;
   } else {
     statusWindow.style.visibility = 'hidden';
     flag = false;
@@ -129,47 +147,61 @@ function appendChat(text) {
 
 function result() {
   var p1_move, p2_move;
-  database.ref().once('value', function(snap) {
+  database.ref().once('value', function (snap) {
     p1_move = snap.val().player1.move;
     p2_move = snap.val().player2.move;
-  }).then(function() {
-    if(p1_move === p2_move) {
-      console.log("tie");
-      resetMoves()
+
+  }).then(function () {
+    if (p1_move === p2_move) {
+      database.ref().once('value', function (snap) {
+        var ties = snap.val().player1.ties;
+        ties++;
+        database.ref('player1/ties').set(ties);
+        database.ref('player1/msg').set('TIE - BOTH PLAYERS CHOSE ' + p1_move.toUpperCase());
+      }).then(function () {
+        console.log("tie");
+        resetMoves()
+      })
       return;
     }
     if (p1_move === "rock" && p2_move === "paper") {
       console.log("player 2 wins");
+      winText = "PLAYER 2 WINS: PAPER COVERS ROCK";
       addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "rock" && p2_move === "scissors") {
       console.log("player 1 wins");
+      winText = "PLAYER 1 WINS: ROCK SMASHES SCISSORS";
       addWin(1);
       resetMoves()
       return;
     }
     if (p1_move === "paper" && p2_move === "rock") {
       console.log("player 1 wins");
+      winText = "PLAYER 1 WINS: PAPER COVERS ROCK";
       addWin(1);
       resetMoves()
       return;
     }
     if (p1_move === "paper" && p2_move === "scissors") {
       console.log("player 2 wins");
+      winText = "PLAYER 2 WINS: SCISSORS CUT PAPER";
       addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "scissors" && p2_move === "rock") {
       console.log("player 2 wins");
+      winText = "PLAYER 2 WINS: SCISSORS SMASHES ROCK";
       addWin(2);
       resetMoves()
       return;
     }
     if (p1_move === "scissors" && p2_move === "paper") {
       console.log("player 1 wins");
+      winText = "PLAYER 1 WINS: SCISSORS CUT PAPER";
       addWin(1);
       resetMoves()
       return;
@@ -184,9 +216,12 @@ function resetMoves() {
 
 function addWin(id) {
   var wins;
-  database.ref('player' + id + '/wins').once('value', function(snap) {
+  database.ref('player' + id + '/wins').once('value', function (snap) {
     wins = snap.val();
     wins++;
     database.ref('player' + id + '/wins').set(wins);
-  })
+  });
+
+  database.ref('player' + id + '/msg').set(winText);
+
 }
